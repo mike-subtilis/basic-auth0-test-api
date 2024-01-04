@@ -39,15 +39,15 @@ if (!envAuthConfig.domain || !envAuthConfig.audience) {
 }
 
 app.get('/hello', (req, res) => {
-    res.send('Hello World!')
+    res.send({ msg: 'Hello World!' });
 });
   
 app.get('/bye', (req, res) => {
-    res.send('Goodbye Cruel World!')
+    res.send({ msg: 'Goodbye Cruel World!' });
 });
 
 app.get('/', (req, res) => {
-    res.send('Blank page')
+    res.send({ msg: 'API Root' });
 });
 
 app.listen(port, () => {
