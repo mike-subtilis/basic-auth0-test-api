@@ -7,18 +7,6 @@ const { auth } = require("express-oauth2-jwt-bearer");
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.get('/hello', (req, res) => {
-    res.send('Hello World!')
-});
-  
-app.get('/bye', (req, res) => {
-    res.send('Goodbye Cruel World!')
-});
-
-app.get('/', (req, res) => {
-    res.send('Blank page')
-});
-  
 const envAuthConfig = {
   domain: process.env.AUTH0_DOMAIN,
   clientId: process.env.AUTH0_CLIENTID,
@@ -49,6 +37,18 @@ if (!envAuthConfig.domain || !envAuthConfig.audience) {
         });
     });
 }
+
+app.get('/hello', (req, res) => {
+    res.send('Hello World!')
+});
+  
+app.get('/bye', (req, res) => {
+    res.send('Goodbye Cruel World!')
+});
+
+app.get('/', (req, res) => {
+    res.send('Blank page')
+});
 
 app.listen(port, () => {
     console.log(`server is running on port ${port}...`);
