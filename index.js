@@ -5,6 +5,10 @@ app.get('/hello', (req, res) => {
   res.send('Hello World!')
 });
 
+app.get('/bye', (req, res) => {
+    res.send('Goodbye Cruel World!')
+  });
+  
 app.get('/', (req, res) => {
     res.send('Blank page')
 });
