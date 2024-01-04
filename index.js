@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
     res.send('Blank page')
 });
 
-const port = process.env.API_PORT || 3001;
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
     console.log(`server is running on port ${port}...`);
 });
