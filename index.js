@@ -3,6 +3,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const { auth } = require("express-oauth2-jwt-bearer");
+const repoFactory = require('./repository.js');
+const apiFactory = require('./api.js');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -13,6 +15,8 @@ const envAuthConfig = {
   audience: process.env.AUTH0_AUDIENCE,
   appOrigin: process.env.APP_ORIGIN || `http://localhost:3000`,
 };
+
+const repo = repoFactory.create();
 
 if (!envAuthConfig.domain || !envAuthConfig.audience) {
   console.log(
@@ -36,6 +40,8 @@ if (!envAuthConfig.domain || !envAuthConfig.audience) {
             msg: "Your access token was successfully validated!",
         });
     });
+
+    app.use('/api/people', checkJwt, apiFactory.create(repo));
 }
 
 app.get('/hello', (req, res) => {
