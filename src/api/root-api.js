@@ -3,11 +3,11 @@ const { auth } = require('express-oauth2-jwt-bearer');
 const peopleApiFactory = require('./people-api.js');
 
 module.exports.create = (authenticationConfig, repo) => {
-    if (!config.authentication.auth0.domain || !config.authentication.auth0.audience) {
+    if (!authenticationConfig.auth0.domain || !authenticationConfig.auth0.audience) {
         console.log(
           'Please make sure that AUTH0_DOMAIN AND AUTH0_AUDIENCE are set with valid domain and audience values'
         );
-        exit();
+        process.exit();
     }
 
     const checkJwt = auth({
