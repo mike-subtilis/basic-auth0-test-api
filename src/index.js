@@ -6,7 +6,6 @@ const config = require('./config.js');
 const repoFactory = require('./database/repository.js');
 const apiFactory = require('./api/root-api.js');
 
-console.log('config = ' + JSON.stringify(config));
 const port = process.env.PORT || 3001;
 const repo = repoFactory.create(config.database);
 
