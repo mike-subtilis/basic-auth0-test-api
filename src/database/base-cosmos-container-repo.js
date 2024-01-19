@@ -50,7 +50,6 @@ module.exports.create = (container, partitionField) => {
   }
 
   async function update(id, partitionValue, eTag, fields) {
-    console.log('updating ' + id + ' / ' + partitionValue + ' / ' + eTag + ' => ' + JSON.stringify(fields));
     const itemRef = container.item(id, partitionValue);
 
     const { resource: existingItem } = await itemRef.read();
@@ -81,11 +80,9 @@ module.exports.create = (container, partitionField) => {
     if (!existingItem) {
       throw new ReferenceError(`Item '${id}' does not exist.`);
     }
-    /*
-    if (existingItem.nonce !== nonce) {
+    if (existingItem._etag !== eTag) {
       throw new ReferenceError(`Item '${id}' has been updated by another user.`);
     }
-    */
 
     await itemRef.delete({ accessCondition: { type: 'IfMatch', condition: eTag } });
   }

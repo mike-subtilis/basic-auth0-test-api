@@ -19,7 +19,7 @@ module.exports.create = (repo) => {
   });
 
   router.post('/', (req, res) => {
-    repo.people.create(req.body)
+    repo.people.create(req.query[repo.people.partitionField], req.body)
       .then((results) => {
         res.json(results);
       });
