@@ -1,23 +1,31 @@
-const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-const morgan = require('morgan');
+const express = require('express');
 const helmet = require('helmet');
-const config = require('./config.js');
-const repoFactory = require('./database/repository.js');
-const apiFactory = require('./api/root-api.js');
+const morgan = require('morgan');
+const config = require('./config');
+const repoFactory = require('./database/repository');
+const apiFactory = require('./api/root-api');
 
-const port = process.env.PORT || 3001;
-const repo = repoFactory.create(config.database);
+async function startServer() {
+  const port = process.env.PORT || 3001;
+  const repo = await repoFactory.create(config.database);
 
-const app = express();
-app.use(morgan('dev'));
-app.use(helmet());
-if (config.authentication.appOrigin) {
+  const app = express();
+  app.use(morgan('dev'));
+  app.use(helmet());
+  if (config.authentication.appOrigin) {
     app.use(cors({ origin: config.authentication.appOrigin }));
+  }
+
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+  app.use('/api', apiFactory.create(config.authentication, repo));
+
+  app.listen(port, () => {
+    console.log(`server is running on port ${port}...`);
+  });
 }
 
-app.use('/api', apiFactory.create(config.authentication, repo));
-
-app.listen(port, () => {
-    console.log(`server is running on port ${port}...`);
-});
+startServer();
