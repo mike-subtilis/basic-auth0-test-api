@@ -1,39 +1,40 @@
 const express = require('express');
 
-module.exports.create = (repo) => {
+module.exports.create = (repo, entityType) => {
   const router = express.Router();
+  const entityRepo = repo[entityType];
 
   router.get('/', (req, res) => {
     const { page = 1, pageSize = 25, ...rest } = req.query;
-    repo.people.getPage(page, pageSize, rest)
+    entityRepo.getPage(page, pageSize, rest)
       .then((results) => {
         res.json(results);
       });
   });
 
   router.get('/:id', (req, res) => {
-    repo.people.get(req.params.id, req.query[repo.people.partitionField])
+    entityRepo.get(req.params.id, req.query[entityRepo.partitionField])
       .then((results) => {
         res.json(results);
       });
   });
 
   router.post('/', (req, res) => {
-    repo.people.create(req.query[repo.people.partitionField], req.body)
+    entityRepo.create(req.query[entityRepo.partitionField], req.body)
       .then((results) => {
         res.json(results);
       });
   });
 
   router.put('/:id', (req, res) => {
-    repo.people.update(req.params.id, req.query[repo.people.partitionField], req.query.etag, req.body)
+    entityRepo.update(req.params.id, req.query[entityRepo.partitionField], req.query.etag, req.body)
       .then((results) => {
         res.json(results);
       });
   });
 
   router.delete('/:id', (req, res) => {
-    repo.people.delete(req.params.id, req.query[repo.people.partitionField], req.query.etag)
+    entityRepo.delete(req.params.id, req.query[entityRepo.partitionField], req.query.etag)
       .then(() => res.sendStatus(200));
   });
 

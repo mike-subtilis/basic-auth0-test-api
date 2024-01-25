@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 
-module.exports.create = (container, partitionField) => {
+module.exports.create = (container, partitionField, createPartitionValue) => {
+  const safeCreatePartitionValue = createPartitionValue || (v => v.id);
+
   async function getPage(pageNumber, pageSize, queryOptions) {
     const filterTokens = Object.keys(queryOptions).map(k => `r.${k} = @${k}`);
 
@@ -36,17 +38,21 @@ module.exports.create = (container, partitionField) => {
 
   async function create(partitionValue, fields) {
     const attributionDate = new Date().toISOString();
-    const { addedItem } = await container
-      .items
-      .upsert({
-        id: crypto.randomUUID(),
-        [partitionField]: partitionValue,
-        ...fields,
-        createdAt: attributionDate,
-        updatedAt: attributionDate,
-      });
+    const attributedAndIdFields = {
+      id: crypto.randomUUID(),
+      ...fields,
+      createdAt: attributionDate,
+      updatedAt: attributionDate,
+    };
+    attributedAndIdFields[partitionField] = partitionValue
+      || fields[partitionField]
+      || safeCreatePartitionValue(attributedAndIdFields);
 
-    return addedItem;
+    const { resource: createdUser } = await container
+      .items
+      .upsert(attributedAndIdFields);
+
+    return createdUser;
   }
 
   async function update(id, partitionValue, eTag, fields) {
